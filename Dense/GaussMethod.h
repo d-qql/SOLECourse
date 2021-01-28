@@ -35,6 +35,7 @@ unsigned int triangulation(DenseMatrix<T> &A, std::vector<T> &b) {
     unsigned int swapCount = 0;
 
     for (idx_t i = 0; i < A.sizeH()-1; ++i) {
+        std::cout<<i<<"\n";
         idx_t iNonZero = col_nonzero(A, i); //индекс максимального по модулю элемента под диагональю
         if (Tabs(A(iNonZero, i)) < tolerance<T>) {
             continue;                          //пропускаем столбец, если под диагональю все нули

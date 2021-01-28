@@ -13,8 +13,9 @@ std::vector<T> backSubstTopTriangular(const DenseMatrix<T> &A, const std::vector
     std::vector<T> res;
     res.resize(b.size());
     res.back() = b.back()/A(A.sizeH()-1, A.sizeW()-1);
+    T sum = 0;
     for(int i = b.size()-2; i >= 0; --i){
-        T sum = 0;
+        sum = 0;
         for(size_t j = i+1; j < b.size(); ++j){
             sum+=A(i, j)*res[j];
         }
@@ -30,8 +31,9 @@ std::vector<T> backSubstLowerTriangular(const DenseMatrix<T> &A, const std::vect
     std::vector<T> res;
     res.resize(b.size());
     res[0] = b[0]/A(0, 0);
+    T sum = 0;
     for(int i = 1; i < A.sizeH(); ++i){
-        T sum = 0;
+        sum = 0;
         for(int j = i-1; j >= 0; --j){
             sum+=A(i, j)*res[j];
         }

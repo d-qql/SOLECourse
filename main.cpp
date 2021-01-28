@@ -23,7 +23,9 @@ void compareStraightMethodsTime(size_t dim);
 void compareStraightMethodsNorm(size_t dim);
 void testThomasAlgo(size_t dim);
 int main() {
+
     compareStraightMethodsTime(1000);
+
     return 0;
 }
 void compareStraightMethodsTime(size_t dim){
