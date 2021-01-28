@@ -7,7 +7,7 @@
 #include "DenseMatrix.h"
 
 template<typename T>
-std::pair<DenseMatrix<T>, DenseMatrix<T>> LUdecomp(DenseMatrix<T> A){
+std::pair<DenseMatrix<T>, DenseMatrix<T>> LUdecomp(const DenseMatrix<T>& A){
     using idx_t = typename DenseMatrix<T>::idx_t;
 
     DenseMatrix<T> L = DenseMatrix<T>(A.sizeH(), A.sizeW());
@@ -16,16 +16,17 @@ std::pair<DenseMatrix<T>, DenseMatrix<T>> LUdecomp(DenseMatrix<T> A){
     for(idx_t i = 0; i < L.sizeH(); ++i){
         L(i, i) = 1;
     }
+    T sum = 0;
     for(idx_t i = 0; i < A.sizeH(); ++i){
         for(idx_t j = 0; j < A.sizeW(); ++j){
+            sum = 0;
             if( i <= j ){
-                T sum = 0;
                 for(idx_t k = 0; k < i; ++k){
                     sum += L(i, k) * U(k, j);
                 }
                 U(i, j) = A(i, j) - sum;
             } else {
-                T sum = 0;
+                sum = 0;
                 for(idx_t k = 0; k < j; ++k){
                     sum += L(i, k) * U(k, j);
                 }
@@ -37,7 +38,7 @@ std::pair<DenseMatrix<T>, DenseMatrix<T>> LUdecomp(DenseMatrix<T> A){
 }
 
 template<typename T>
-std::vector<T> solveByLU(DenseMatrix<T> A, std::vector<T> b){
+std::vector<T> solveByLU(const DenseMatrix<T> &A, const std::vector<T> &b){
     std::pair<DenseMatrix<T>, DenseMatrix<T>> LU = LUdecomp(A);
     return backSubstTopTriangular(LU.second, backSubstLowerTriangular(LU.first, b));
 }
