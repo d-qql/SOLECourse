@@ -8,6 +8,7 @@
 #include <vector>
 #include "DenseMatrix.h"
 #include "../utility/Consts.h"
+#include "BackSubstitution.h"
 template<typename T>
 typename DenseMatrix<T>::idx_t col_nonzero(const DenseMatrix<T> &A, const typename DenseMatrix<T>::idx_t& col) {
 
@@ -59,22 +60,8 @@ unsigned int triangulation(DenseMatrix<T> &A, std::vector<T> &b) {
 template <typename T>
 std::vector<T> GaussMethod(DenseMatrix<T> A,
                                std::vector<T> b) {
-
     triangulation(A, b); //приводим матрицу к верхнетреугольной с выбором главного элемента
-
-    //ОБРАТНЫЙ ХОД
-    std::vector<T> res;
-    res.resize(b.size());
-    res.back() = b.back()/A(A.sizeH()-1, A.sizeW()-1);
-    for(int i = b.size()-2; i >= 0; --i){
-        T sum = 0;
-        for(size_t j = i+1; j < b.size(); ++j){
-            sum+=A(i, j)*res[j];
-        }
-        res[i] = (b[i] - sum)/A(i, i);
-    }
-    //ОКОНЧАНИЕ ОБРАТНОГО ХОДА
-    return res;
+    return backSubstTopTriangular(A, b);
 }
 
 
