@@ -52,6 +52,13 @@ public:
         this->rows = rows;
     }
 
+    [[nodiscard]] idx_t sizeH() const {
+        return H;
+    }
+    [[nodiscard]] idx_t sizeW() const {
+        return W;
+    }
+
     const elm_t& operator()(idx_t const i, idx_t const j) const{
         idx_t skip = this->rows[i];
         idx_t count = this->rows[i+1] - this->rows[i];
@@ -61,7 +68,7 @@ public:
         return 0;
     }
 
-    std::vector<elm_t> operator*(const std::vector<elm_t> &b){
+    std::vector<elm_t> operator*(const std::vector<elm_t> &b) const {
         std::vector<elm_t> res(this->H);
         for(idx_t i = 0; i < this->H; ++i){
             res[i] = static_cast<T>(0);
