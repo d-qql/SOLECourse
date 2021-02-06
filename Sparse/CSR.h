@@ -12,11 +12,20 @@
 #include "algorithm"
 
 template<typename T>
+class CSR;
+
+template<typename T>
+std::vector<T> GaussSeidelMultiply(const CSR<T> &A, const std::vector<T> &b);
+
+template<typename T>
 class CSR{
 public:
     using elm_t = T;
     using idx_t = std::size_t;
 private:
+
+    friend std::vector<elm_t> GaussSeidelMultiply(const CSR<T> &A, const std::vector<T> &b);
+
     const idx_t H, W;
     std::vector<elm_t> values;
     std::vector<idx_t> cols;

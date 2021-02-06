@@ -19,6 +19,67 @@
 #include "../Sparse/CSR.h"
 #include "../Sparse/SimpleIteration.h"
 
+
+void testMultiply_Time(size_t dim){     //тест скорость умножения плотной и разреженной матрицы на вектор
+    std::vector<std::pair<int, double>> plotDataDense;
+    std::vector<std::pair<int, double>> plotDataCSR;
+    std::vector<double> d(dim);
+    std::vector<double> c(dim);
+    std::ofstream fout;
+    fout.open("../PlotData/MultiplyTime/Dense.txt", std::ios::out);
+    fout.close();
+    fout.open("../PlotData/MultiplyTime/CSR.txt", std::ios::out);
+    fout.close();
+    for(size_t i = 1; i<=dim*dim/2; ++i) {
+        std::set<Triplet<double>> in = GenerateMatrix_FilledNumber<double>(dim, i, -10000, 10000);
+        DenseMatrix<double> D(dim, dim, in);
+        CSR<double> C(dim, dim, in);
+        std::vector<double> b = GenerateVector<double>(dim, -10000, 10000);
+        clock_t end, start = clock();
+        d = D*b;
+        end = clock();
+        fout.open("../PlotData/MultiplyTime/Dense.txt", std::ios::app);
+        fout<<i<<" "<<double(end - start) / CLOCKS_PER_SEC<<"\n";
+        fout.close();
+        start = clock();
+        c = C*b;
+        end = clock();
+        fout.open("../PlotData/MultiplyTime/CSR.txt", std::ios::app);
+        fout<<i<<" "<<double(end - start) / CLOCKS_PER_SEC<<"\n";
+        fout.close();
+        std::cout<<d<<c<<std::endl;
+        std::cout<<i<<"\n";
+    }
+    Gnuplot gp;
+    gp<<"set xlabel 'Число ненулевых элементов' \n"
+        "set ylabel 'Время умножения'\n"
+        "set grid\n"
+        "set title 'Зависимость времени умножения матрицы на плотный вектор от заполненности' font 'Helvetica Bold, 10'\n";
+    gp << "plot '../PlotData/MultiplyTime/Dense.txt' with lines title 'Dense' lc rgb 'blue',"
+          "     '../PlotData/MultiplyTime/Dense.txt' with lines title 'CSR' lc rgb 'red'\n";
+}
+
+void testIterNumber_Tao(){
+    std::set<Triplet<double>> in;
+    std::vector<double> b(300);
+    for(size_t i = 1; i <= 300; ++i){
+        in.insert({double(i)/30, i-1, i-1});
+        b[i-1] = double(301-i)/30;
+    }
+    CSR<double> A = CSR<double>(300, 300, in);
+    for(int i = 1; i <= 500; ++i){
+        SimpleIteration(A, b, 0.19894 +  double(i) / 1000000);
+    }
+
+/*    Gnuplot gp;
+    gp<<"set xlabel 'Тао' \n"
+        "set ylabel 'Число итераций'\n"
+        "set xrange [0.03:0.22]\n"
+        "set grid\n"
+        "set title 'Зависимость числа итераций от Тао для схождения с точностью 1e-12' font 'Helvetica Bold, 10'\n";
+    gp << "plot '../PlotData/SimpleIteration/IterNumbTao.txt' with lines title 'Taо -> IterNumb' lc rgb 'blue'\n";*/
+}
+
 void testSimpleIteration_Speed(){
     std::set<Triplet<double>> in;
     std::vector<double> b(300);
@@ -28,22 +89,22 @@ void testSimpleIteration_Speed(){
     }
     CSR<double> A = CSR<double>(300, 300, in);
     //std::vector<double> tao = {0.01, 0.02, 0.03, 0.05, 0.07, 0.1, 0.13, 0.15, 0.17, 0.18, 0.185, 0.19, 0.20, 0.23, 0.26, 0.31, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9};
-    std::cout<<SimpleIteration(A, b, 0.175);
+    std::cout<<SimpleIteration(A, b, 0.15);
+    std::cout<<SimpleIteration(A, b, 0.165);
     std::cout<<SimpleIteration(A, b, 0.18);
-    std::cout<<SimpleIteration(A, b, 0.1818);
-    std::cout<<SimpleIteration(A, b, 0.183);
-    std::cout<<SimpleIteration(A, b, 0.188);
+    std::cout<<SimpleIteration(A, b, 0.195);
+    std::cout<<SimpleIteration(A, b, 0.135);
 
     Gnuplot gp;
     gp<<"set xlabel 'Номер итерации' \n"
         "set ylabel 'ln(|r|))'\n"
         "set grid\n"
         "set title 'Зависимость логарифма модуля невязки от номера итерации ПМИ' font 'Helvetica Bold, 10'\n";
-    gp << "plot '../PlotData/SimpleIteration/SimpleIteration_Speed0.175000.txt' u 1:2 with lines title 'tao = 0.175' lc rgb 'blue', "
-          "     '../PlotData/SimpleIteration/SimpleIteration_Speed0.180000.txt' u 1:2 with lines title 'tao = 0.18' lc rgb 'red', "
-          "     '../PlotData/SimpleIteration/SimpleIteration_Speed0.181800.txt' u 1:2 with lines title 'tao = 0.1818' lc rgb 'green', "
-          "     '../PlotData/SimpleIteration/SimpleIteration_Speed0.183000.txt' with lines title 'tao = 0.183' lc rgb 'black', "
-          "     '../PlotData/SimpleIteration/SimpleIteration_Speed0.188000.txt' with lines title 'tao = 0.188' lc rgb 'purple'\n";
+    gp << "plot '../PlotData/SimpleIteration/SimpleIteration_Speed0.150000.txt' u 1:2 with lines title 'tao = 0.15' lc rgb 'blue', "
+          "     '../PlotData/SimpleIteration/SimpleIteration_Speed0.165000.txt' u 1:2 with lines title 'tao = 0.165' lc rgb 'red', "
+          "     '../PlotData/SimpleIteration/SimpleIteration_Speed0.180000.txt' u 1:2 with lines title 'tao = 0.18' lc rgb 'green', "
+          "     '../PlotData/SimpleIteration/SimpleIteration_Speed0.195000.txt' u 1:2 with lines title 'tao = 0.195' lc rgb 'black', "
+          "     '../PlotData/SimpleIteration/SimpleIteration_Speed0.135000.txt' u 1:2 with lines title 'tao = 0.135' lc rgb 'purple'\n";
 
 }
 

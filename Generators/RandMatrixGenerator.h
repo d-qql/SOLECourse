@@ -20,4 +20,13 @@ std::set<Triplet<T>> GenerateMatrix(const size_t& size, const int &a, const int 
     return out;
 }
 
+template<typename T>
+std::set<Triplet<T>> GenerateMatrix_FilledNumber(const size_t &size, const size_t& filledNumber, const int &a, const int&b){
+    srand(time(0));
+    std::set<Triplet<T>> out;
+    while(out.size() < filledNumber){
+        out.insert({static_cast<T>(a + rand()%(b-a+1)), static_cast<size_t>(rand() % size), static_cast<size_t>(rand() % size)});
+    }
+    return out;
+}
 #endif //SOLECOURSE_RANDMATRIXGENERATOR_H

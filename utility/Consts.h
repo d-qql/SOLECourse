@@ -7,7 +7,7 @@
 #include <cmath>
 
 template<typename T>
-[[maybe_unused]] const auto tolerance = static_cast<T>(1e-10);
+[[maybe_unused]] const auto tolerance = static_cast<T>(1e-13);
 
 template<typename T>
 T Tabs(T value){
@@ -20,6 +20,11 @@ T norm(const std::vector<T>& v){
     T sum = 0;
     for(auto i: v) sum+=i*i;
     return std::sqrt(sum);
+}
+
+template<typename T>
+int sgn(T val) {
+    return (T(0) < val) - (val < T(0));
 }
 
 #endif //SOLECOURSE_CONSTS_H

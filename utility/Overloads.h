@@ -41,6 +41,15 @@ std::vector<T> operator-(const std::vector<T>& fVec, const std::vector<T>& sVec)
 }
 
 template<typename T>
+T operator*(const std::vector<T>& a, const std::vector<T>& b){
+    auto res = static_cast<T>(0);
+    for(size_t i = 0; i < a.size(); ++i){
+        res += a[i]*b[i];
+    }
+    return res;
+}
+
+template<typename T>
 std::ostream& operator<<(std::ostream& os, const std::vector<T>& b){
     os<<"( ";
     for(auto i: b){
