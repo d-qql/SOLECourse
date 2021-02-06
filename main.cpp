@@ -14,6 +14,7 @@
 #include "Dense/ThomasAlgorithm.h"
 #include "Dense/LU.h"
 #include "Tests/Tests.h"
+#include "Dense/Householder.h"
 #include <ctime>
 #include <fstream>
 
@@ -26,7 +27,22 @@ int main() {
     CSR<int> K = CSR<int>(3, 3, in1);
     K.print();
     */
-    testSimpleIteration_Speed();
+
+    Gnuplot gp;
+    gp<<"set xlabel 'Число ненулевых элементов' \n"
+        "set ylabel 'Время умножения'\n"
+        "set xrange [0:150000]\n"
+        "set yrange [0:0.003]\n"
+        "set grid\n"
+        "set title 'Зависимость времени умножения матрицы на плотный вектор от заполненности' font 'Helvetica Bold, 10'\n";
+    gp << "plot '../PlotData/MultiplyTime/Dense.txt' u 1:2 with lines title 'Dense' lc rgb 'blue',"
+          "     '../PlotData/MultiplyTime/CSR.txt' u 1:2 with lines title 'CSR' lc rgb 'red'\n";
+/*    Gnuplot gp;
+    gp<<"set xlabel 'Тао' \n"
+        "set ylabel 'Число итераций'\n"
+        "set grid\n"
+        "set title 'Зависимость числа итераций от Тао для схождения с точностью 1e-12' font 'Helvetica Bold, 10'\n";
+    gp << "plot '../PlotData/SimpleIteration/EpsilonNumbTao.txt' with lines title 'Taо -> IterNumb' lc rgb 'blue'\n";*/
     return 0;
 }
 

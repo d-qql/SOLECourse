@@ -27,7 +27,7 @@ std::vector<T> ThomasAlgorithm(DenseMatrix<T> A, std::vector<T> B){
     a[0] = -A(0, 1) / y;
     b[0] = B[0] / y;
 
-    for(idx_t i = 0; i < N-1; ++i){
+    for(idx_t i = 1; i < N-1; ++i){
         try{
             y = A(i, i) + A(i, i-1) * a[i-1];
             if (Tabs(y) < tolerance<T>) throw "Метод ThomasAlgo не сходится.";

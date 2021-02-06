@@ -9,7 +9,6 @@
 #include "../utility/gnuplot-iostream.h"
 template<typename T>
 std::vector<T> SimpleIteration(const CSR<T> &A, const std::vector<T> &b, const T &tao){
-    using elm_t = typename CSR<T>::elm_t;
 
     std::vector<T> x(A.sizeH());
     std::vector<T> r = A * x - b;
@@ -25,6 +24,13 @@ std::vector<T> SimpleIteration(const CSR<T> &A, const std::vector<T> &b, const T
         std::cout<<N<<std::endl;
     }
 
+
+    std::ofstream fout;
+    fout.open("../PlotData/SimpleIteration/IterNumbTao.txt", std::ios::app);
+    fout<<tao<<" "<<i<<"\n";
+    fout.close();
+
+/*
     std::ofstream fout("../PlotData/SimpleIteration/SimpleIteration_Speed" + std::to_string(tao) + ".txt");
     for(auto k: plotData){
         fout<<k.first<<" "<<k.second<<"\n";
@@ -37,7 +43,7 @@ std::vector<T> SimpleIteration(const CSR<T> &A, const std::vector<T> &b, const T
         "set grid\n"
         "set title 'Зависимость логарифма модуля невязки от номера итерации ПМИ' font 'Helvetica Bold, 10'\n";
     gp << "plot '-' with lines title 'Iter->ln(|r|)' lc rgb 'blue'\n";
-    gp.send1d(plotData);
+    gp.send1d(plotData);*/
     return x;
 }
 
