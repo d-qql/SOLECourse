@@ -18,7 +18,66 @@
 #include "../Dense/HeadGaussMethod.h"
 #include "../Sparse/CSR.h"
 #include "../Sparse/SimpleIteration.h"
+#include "../Sparse/Gauss-Seidel.h"
 
+void testMultiply_Time_DifferentDim(size_t dim){     //тест скорость умножения плотной и разреженной матрицы на вектор
+    std::vector<double> d(dim);
+    std::vector<double> c(dim);
+    std::ofstream fout;
+    fout.open("../PlotData/MultiplyTime/Dense20percent.txt", std::ios::out);
+    fout.close();
+    fout.open("../PlotData/MultiplyTime/CSR20percent.txt", std::ios::out);
+    fout.close();
+    for(size_t i = 3; i<=dim; ++i) {
+        std::set<Triplet<double>> in = GenerateMatrix_FilledNumber<double>(i, i*i/5, -10000, 10000);
+        DenseMatrix<double> D(i, i, in);
+        CSR<double> C(i, i, in);
+        std::vector<double> b = GenerateVector<double>(i, -10000, 10000);
+        clock_t end, start = clock();
+        d = D*b;
+        end = clock();
+        fout.open("../PlotData/MultiplyTime/Dense20percent.txt", std::ios::app);
+        fout<<i<<" "<<log(double(end - start) / CLOCKS_PER_SEC)<<"\n";
+        fout.close();
+        start = clock();
+        c = C*b;
+        end = clock();
+        fout.open("../PlotData/MultiplyTime/CSR20percent.txt", std::ios::app);
+        fout<<i<<" "<<log(double(end - start) / CLOCKS_PER_SEC)<<"\n";
+        fout.close();
+        std::cout<<d<<c<<std::endl;
+        std::cout<<i<<"\n";
+    }
+    Gnuplot gp;
+    gp<<"set xlabel 'Размерность' \n"
+        "set ylabel 'Время умножения'\n"
+        "set grid\n"
+        "set title 'Зависимость времени умножения матрицы на плотный вектор от размерности, 20% заполнение' font 'Helvetica Bold, 10'\n";
+    gp << "plot '../PlotData/MultiplyTime/Dense20percent.txt' with lines title 'Dense' lc rgb 'blue',"
+          "     '../PlotData/MultiplyTime/CSR20percent.txt' with lines title 'CSR' lc rgb 'red'\n";
+}
+
+void compareSimpleIterationMetods_Norm(size_t dim){
+    std::set<Triplet<double>> in;
+    for(size_t i = 0; i < dim; ++i){
+        for(size_t j = 0; j < dim; ++j){
+            if( i == j ) in.insert({1 + static_cast <double > (rand()) /( static_cast <double > (RAND_MAX/(0.6))), i, j});
+            else in.insert({(-1 + static_cast <double > (rand()) /( static_cast <double > (RAND_MAX/(2))))/10, i, j});
+        }
+    }
+    CSR<double> A = CSR<double>(dim, dim, in);
+    std::vector<double> b = GenerateVector<double>(dim, -1, 1);
+    printSystem(A, b);
+    std::cout<<SimpleIteration(A, b, 1.);
+    std::cout<<GaussSeidel(A, b);
+    Gnuplot gp;
+    gp<<"set xlabel 'Номер итерации' \n"
+        "set ylabel 'Логарифм невязки'\n"
+        "set grid\n"
+        "set title 'Зависимость логарифма нормы невязки от номера итерации' font 'Helvetica Bold, 10'\n";
+    gp << "plot '../PlotData/SimpleIteration/SimpleIterNorm.txt' with lines title 'ПМИ' lc rgb 'blue',"
+          "     '../PlotData/SimpleIteration/GaussSeidelNorm.txt' with lines title 'Гаусс-Зейдель' lc rgb 'red'\n";
+}
 
 void testMultiply_Time(size_t dim){     //тест скорость умножения плотной и разреженной матрицы на вектор
     std::vector<std::pair<int, double>> plotDataDense;

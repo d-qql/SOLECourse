@@ -5,6 +5,8 @@
 #ifndef SOLECOURSE_OVERLOADS_H
 #define SOLECOURSE_OVERLOADS_H
 #include <vector>
+#include "../Sparse/CSR.h"
+#include "../Dense/DenseMatrix.h"
 
 template<typename T>
 std::vector<T> operator*(const T &k, std::vector<T> const &vec){
@@ -59,6 +61,25 @@ std::ostream& operator<<(std::ostream& os, const std::vector<T>& b){
     return os;
 }
 
+template<typename T>
+void printSystem(const CSR<T> &A, const std::vector<T> &b){
+    for(size_t i = 0; i < A.sizeH(); ++i){
+        for(size_t j = 0; j < A.sizeW(); ++j){
+            std::cout<<A(i, j)<<" ";
+        }
+        std::cout<<b[i]<<std::endl;
+    }
+}
+
+template<typename T>
+void printSystem(const DenseMatrix<T> &A, const std::vector<T> &b){
+    for(size_t i = 0; i < A.sizeH(); ++i){
+        for(size_t j = 0; j < A.sizeW(); ++j){
+            std::cout<<A(i, j)<<" ";
+        }
+        std::cout<<b[i]<<std::endl;
+    }
+}
 
 
 #endif //SOLECOURSE_OVERLOADS_H

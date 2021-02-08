@@ -25,13 +25,13 @@ std::vector<T> SimpleIteration(const CSR<T> &A, const std::vector<T> &b, const T
     }
 
 
-    std::ofstream fout;
+/*    std::ofstream fout;
     fout.open("../PlotData/SimpleIteration/IterNumbTao.txt", std::ios::app);
     fout<<tao<<" "<<i<<"\n";
-    fout.close();
+    fout.close();*/
 
-/*
-    std::ofstream fout("../PlotData/SimpleIteration/SimpleIteration_Speed" + std::to_string(tao) + ".txt");
+    std::ofstream fout;
+    fout.open("../PlotData/SimpleIteration/SimpleIterNorm.txt", std::ios::out);
     for(auto k: plotData){
         fout<<k.first<<" "<<k.second<<"\n";
     }
@@ -43,7 +43,7 @@ std::vector<T> SimpleIteration(const CSR<T> &A, const std::vector<T> &b, const T
         "set grid\n"
         "set title 'Зависимость логарифма модуля невязки от номера итерации ПМИ' font 'Helvetica Bold, 10'\n";
     gp << "plot '-' with lines title 'Iter->ln(|r|)' lc rgb 'blue'\n";
-    gp.send1d(plotData);*/
+    gp.send1d(plotData);
     return x;
 }
 
