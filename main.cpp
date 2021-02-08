@@ -15,11 +15,13 @@
 #include "Dense/LU.h"
 #include "Tests/Tests.h"
 #include "Dense/Householder.h"
+#include "Sparse/Gauss-Seidel.h"
 #include <ctime>
 #include <fstream>
 
 int main() {
 
+    testMultiply_Time_DifferentDim(1000);
     /*std::set<Triplet<int>> in = {{1, 0, 0}, {2, 0, 1}, {3, 0, 3}, {4, 1, 2}};
     CSR<int> A = CSR<int>(3, 4, in);
     A.print();
@@ -27,8 +29,7 @@ int main() {
     CSR<int> K = CSR<int>(3, 3, in1);
     K.print();
     */
-
-    Gnuplot gp;
+/*    Gnuplot gp;
     gp<<"set xlabel 'Число ненулевых элементов' \n"
         "set ylabel 'Время умножения'\n"
         "set xrange [0:150000]\n"
@@ -36,7 +37,7 @@ int main() {
         "set grid\n"
         "set title 'Зависимость времени умножения матрицы на плотный вектор от заполненности' font 'Helvetica Bold, 10'\n";
     gp << "plot '../PlotData/MultiplyTime/Dense.txt' u 1:2 with lines title 'Dense' lc rgb 'blue',"
-          "     '../PlotData/MultiplyTime/CSR.txt' u 1:2 with lines title 'CSR' lc rgb 'red'\n";
+          "     '../PlotData/MultiplyTime/CSR.txt' u 1:2 with lines title 'CSR' lc rgb 'red'\n";*/
 /*    Gnuplot gp;
     gp<<"set xlabel 'Тао' \n"
         "set ylabel 'Число итераций'\n"

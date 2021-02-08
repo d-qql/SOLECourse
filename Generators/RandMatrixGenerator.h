@@ -29,4 +29,17 @@ std::set<Triplet<T>> GenerateMatrix_FilledNumber(const size_t &size, const size_
     }
     return out;
 }
+
+template<typename T>
+std::set<Triplet<T>> GenerateMatrixDiagDominant(const size_t& size, const int &a, const int &b){
+    srand(time(0));
+    std::set<Triplet<T>> out;
+    for(size_t i = 0; i < size; ++i){
+        for(size_t j = 0; j < size; ++j){
+            if( i == j ) out.insert({static_cast<T>(abs((a + rand()%(b-a+1)))*1000 + a + rand()%(b-a+1)), i, j});
+            else out.insert({static_cast<T>(a + rand()%(b-a+1)), i, j});
+        }
+    }
+    return out;
+}
 #endif //SOLECOURSE_RANDMATRIXGENERATOR_H

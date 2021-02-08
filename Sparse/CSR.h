@@ -12,19 +12,14 @@
 #include "algorithm"
 
 template<typename T>
-class CSR;
-
-template<typename T>
-std::vector<T> GaussSeidelMultiply(const CSR<T> &A, const std::vector<T> &b);
-
-template<typename T>
 class CSR{
 public:
     using elm_t = T;
     using idx_t = std::size_t;
-private:
 
-    friend std::vector<elm_t> GaussSeidelMultiply(const CSR<T> &A, const std::vector<T> &b);
+    template<typename EL>
+    friend std::vector<EL> GaussSeidel(const CSR<EL> &A, const std::vector<EL> &b);
+private:
 
     const idx_t H, W;
     std::vector<elm_t> values;
@@ -68,14 +63,15 @@ public:
         return W;
     }
 
-    const elm_t& operator()(idx_t const i, idx_t const j) const{
+    elm_t operator()(idx_t const i, idx_t const j) const{
         idx_t skip = this->rows[i];
         idx_t count = this->rows[i+1] - this->rows[i];
         for (idx_t k = skip; k < skip+count; ++k) {
             if(this->cols[k] == j) return this->values[k];
         }
-        return 0;
+        return static_cast<elm_t>(0);
     }
+
 
     std::vector<elm_t> operator*(const std::vector<elm_t> &b) const {
         std::vector<elm_t> res(this->H);
@@ -127,10 +123,14 @@ public:
         std::cout<<std::endl;
     }
 };
-
 template<typename T>
 std::ostream& operator<<(std::ostream& os, const CSR<T> &Matrix){
-
+    for(size_t i = 0; i < Matrix.sizeH(); ++i){
+        for(size_t j = 0; j < Matrix.sizeW(); ++j){
+            os<<Matrix(i, j)<<" ";
+        }
+        os<<std::endl;
+    }
     return os;
 }
 
