@@ -18,32 +18,26 @@
 #include "Sparse/Gauss-Seidel.h"
 #include <ctime>
 #include <fstream>
+#include "Sparse/Yacobi.h"
 
 int main() {
 
-    testMultiply_Time_DifferentDim(1000);
-    /*std::set<Triplet<int>> in = {{1, 0, 0}, {2, 0, 1}, {3, 0, 3}, {4, 1, 2}};
-    CSR<int> A = CSR<int>(3, 4, in);
-    A.print();
-    std::set<Triplet<int>> in1 = {{1, 0, 0}, {2, 0, 1}, {4, 1, 1}, {2, 2, 1}, {6, 2, 2}};
-    CSR<int> K = CSR<int>(3, 3, in1);
-    K.print();
-    */
-/*    Gnuplot gp;
-    gp<<"set xlabel 'Число ненулевых элементов' \n"
-        "set ylabel 'Время умножения'\n"
-        "set xrange [0:150000]\n"
-        "set yrange [0:0.003]\n"
+    DenseMatrix<double> A = DenseMatrix<double>(10, 10, GenerateMatrix<double>(10, -100, 100));
+    std::cout<<LUdecomp(A).first<<LUdecomp(A).second;
+/*    CSR<double> A = CSR<double>(100, 100, GenerateMatrixDiagDominant<double>(100));
+    std::vector<double> b = GenerateVector<double>(100, -1, 1);
+    printSystem(A, b);
+    std::cout<<GaussSeidel(A, b);
+    std::cout<<Yacobi(A, b);
+    std::cout<<SimpleIteration(A, b, 1.);
+    Gnuplot gp;
+    gp<<"set xlabel 'Номер итерации' \n"
+        "set ylabel 'Логарифм невязки'\n"
         "set grid\n"
-        "set title 'Зависимость времени умножения матрицы на плотный вектор от заполненности' font 'Helvetica Bold, 10'\n";
-    gp << "plot '../PlotData/MultiplyTime/Dense.txt' u 1:2 with lines title 'Dense' lc rgb 'blue',"
-          "     '../PlotData/MultiplyTime/CSR.txt' u 1:2 with lines title 'CSR' lc rgb 'red'\n";*/
-/*    Gnuplot gp;
-    gp<<"set xlabel 'Тао' \n"
-        "set ylabel 'Число итераций'\n"
-        "set grid\n"
-        "set title 'Зависимость числа итераций от Тао для схождения с точностью 1e-12' font 'Helvetica Bold, 10'\n";
-    gp << "plot '../PlotData/SimpleIteration/EpsilonNumbTao.txt' with lines title 'Taо -> IterNumb' lc rgb 'blue'\n";*/
+        "set title 'Зависимость логарифма нормы невязки от номера итерации' font 'Helvetica Bold, 10'\n";
+    gp << "plot '../PlotData/SimpleIteration/YacobiNorm.txt' with lines title 'Якоби' lc rgb 'blue',"
+          "     '../PlotData/SimpleIteration/SimpleIterNorm.txt' with lines title 'ПМИ' lc rgb 'green',"
+          "     '../PlotData/SimpleIteration/GaussSeidelNorm.txt' with lines title 'Гаусс-Зейдель' lc rgb 'red'\n";*/
     return 0;
 }
 
