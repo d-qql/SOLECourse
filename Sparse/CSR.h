@@ -9,6 +9,7 @@
 #include <vector>
 #include <set>
 #include "../utility/Triplet.h"
+#include "../utility/Consts.h"
 #include "algorithm"
 
 template<typename T>
@@ -85,6 +86,30 @@ public:
         return res;
     }
 
+    std::pair<T, T> localizeEigenVals() const{
+        auto a = static_cast<T>(0);
+        auto b = static_cast<T>(0);
+        T r = 0;
+        T center = 0;
+        for (idx_t j = this->rows[0]; j < this->rows[1]; ++j) {     //проход по 0 строке
+            if( cols[j] != 0 ) r += Tabs(values[j]);                //если номер столбца не равен номеру строки, то радиус увеличивается на модуль элемента
+            else center = values[j];                                //иначе это диагональный элемент => является центром круга Гершгорина
+        }
+        a = center - r;
+        b = center + r;
+        for(size_t i = 1; i < H; ++i) {                                  //проход по оставшимся строкам
+            r = 0;
+            center = 0;
+            for (idx_t j = this->rows[i]; j < this->rows[i + 1]; ++j) {  //проход по строке
+                if( cols[j] != i ) r += Tabs(values[j]);                //если номер столбца не равен номеру строки, то радиус увеличивается на модуль элемента
+                else center = values[j];                                //иначе это диагональный элемент => является центром круга Гершгорина
+            }
+            if( center - r < a) a = center - r;
+            if( center + r > b) b = center + r;
+        }
+        return {a, b};
+    }
+
     CSR transpose(){
         idx_t NonZero = values.size();
         std::vector<elm_t> tVals(NonZero);
@@ -124,6 +149,7 @@ public:
         for(auto i: rows) std::cout<<i<<" ";
         std::cout<<std::endl;
     }
+
 };
 template<typename T>
 std::ostream& operator<<(std::ostream& os, const CSR<T> &Matrix){

@@ -31,7 +31,8 @@ std::vector<T> SimpleIteration(const CSR<T> &A, const std::vector<T> &b, const T
     fout.close();*/
 
     std::ofstream fout;
-    fout.open("../PlotData/SimpleIteration/SimpleIterNorm.txt", std::ios::out);
+    if(Tabs(tao - 1) < tolerance<T>) fout.open("../PlotData/SimpleIteration/1SimpleIterNorm.txt", std::ios::out);
+    else fout.open("../PlotData/SimpleIteration/OptSimpleIterNorm.txt", std::ios::out);
     for(auto k: plotData){
         fout<<k.first<<" "<<k.second<<"\n";
     }
@@ -46,5 +47,39 @@ std::vector<T> SimpleIteration(const CSR<T> &A, const std::vector<T> &b, const T
     gp.send1d(plotData);
     return x;
 }
+
+template<typename T>
+std::vector<T> FastSimpleIteration(const CSR<T> &A, const std::vector<T> &b, const std::vector<T>& ChebRoots) {
+
+    std::vector<T> x(A.sizeH());
+    std::vector<T> r = A * x - b;
+    int i = 0;
+    T N = norm(r);
+    std::vector<std::pair<int, double>> plotData;
+    bool flag = true;
+    while (flag) {
+        for( auto root : ChebRoots) {
+            x = -static_cast<T>(1)/root * (A * x - b) + x;
+            r = A * x - b;
+            plotData.emplace_back(i, log(N));
+            ++i;
+            N = norm(r);
+            std::cout << N << std::endl;
+            if( N < tolerance<T> ){
+                flag = false;
+                break;
+            }
+        }
+    }
+    std::ofstream fout;
+    fout.open("../PlotData/SimpleIteration/FastSimpleIterNorm.txt", std::ios::out);
+    for(auto k: plotData){
+        fout<<k.first<<" "<<k.second<<"\n";
+    }
+    fout.close();
+    return x;
+}
+
+
 
 #endif //SOLECOURSE_SIMPLEITERATION_H
