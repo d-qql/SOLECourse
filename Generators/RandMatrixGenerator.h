@@ -35,9 +35,12 @@ std::set<Triplet<T>> GenerateMatrixDiagDominant(const size_t& size){
     srand(time(0));
     std::set<Triplet<T>> in;
     for(size_t i = 0; i < size; ++i){
-        for(size_t j = 0; j < size; ++j){
+        for(size_t j = 0; j <= i; ++j){
             if( i == j ) in.insert({1 + static_cast <double > (rand()) /( static_cast <double > (RAND_MAX/(0.6))), i, j});
-            else in.insert({(-1 + static_cast <double > (rand()) /( static_cast <double > (RAND_MAX/(2))))/10, i, j});
+            else {
+                in.insert({(-1 + static_cast <double > (rand()) /( static_cast <double > (RAND_MAX/(2))))/1000, i, j});
+                in.insert({(-1 + static_cast <double > (rand()) /( static_cast <double > (RAND_MAX/(2))))/1000, j, i});
+            }
         }
     }
     return in;

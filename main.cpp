@@ -19,25 +19,31 @@
 #include <ctime>
 #include <fstream>
 #include "Sparse/Yacobi.h"
+#include "Chebyshev/Chebyshev.h"
 
 int main() {
+    std::set<Triplet<double>> in;
+    for(size_t i = 0; i < 300; ++i){
+            in.insert({double (1 + i/598.), i, i});
+    }
+    CSR<double> A = CSR<double>(300, 300, in);
+    std::cout<<A;
+    std::vector<double> b = GenerateVector<double>(300, -1, 1);
+    std::vector<double> roots = ChebyshevRoots<double>({1, 1.5}, 7);
+    SimpleIteration(A, b, 2./2.5);
+    SimpleIteration(A, b, 1.);
+    FastSimpleIteration(A, b, roots);
 
-    DenseMatrix<double> A = DenseMatrix<double>(10, 10, GenerateMatrix<double>(10, -100, 100));
-    std::cout<<LUdecomp(A).first<<LUdecomp(A).second;
-/*    CSR<double> A = CSR<double>(100, 100, GenerateMatrixDiagDominant<double>(100));
-    std::vector<double> b = GenerateVector<double>(100, -1, 1);
-    printSystem(A, b);
-    std::cout<<GaussSeidel(A, b);
-    std::cout<<Yacobi(A, b);
-    std::cout<<SimpleIteration(A, b, 1.);
+
     Gnuplot gp;
     gp<<"set xlabel 'Номер итерации' \n"
-        "set ylabel 'Логарифм невязки'\n"
+        "set ylabel 'ln(|r|))'\n"
         "set grid\n"
-        "set title 'Зависимость логарифма нормы невязки от номера итерации' font 'Helvetica Bold, 10'\n";
-    gp << "plot '../PlotData/SimpleIteration/YacobiNorm.txt' with lines title 'Якоби' lc rgb 'blue',"
-          "     '../PlotData/SimpleIteration/SimpleIterNorm.txt' with lines title 'ПМИ' lc rgb 'green',"
-          "     '../PlotData/SimpleIteration/GaussSeidelNorm.txt' with lines title 'Гаусс-Зейдель' lc rgb 'red'\n";*/
+        "set title 'Зависимость логарифма модуля невязки от номера итерации ПМИ' font 'Helvetica Bold, 10'\n";
+    gp << "plot '../PlotData/SimpleIteration/1SimpleIterNorm.txt' u 1:2 with lines title 'tao = 1' lc rgb 'black', "
+          "     '../PlotData/SimpleIteration/OptSimpleIterNorm.txt' u 1:2 with lines title 'Optimal' lc rgb 'purple',"
+          "     '../PlotData/SimpleIteration/FastSimpleIterNorm.txt' u 1:2 with lines title 'Chebyshev' lc rgb 'green'\n";
+
     return 0;
 }
 
