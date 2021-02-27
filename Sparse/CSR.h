@@ -22,6 +22,8 @@ public:
     friend std::vector<EL> GaussSeidel(const CSR<EL> &A, const std::vector<EL> &b);
     template<typename EL>
     friend std::vector<EL> Yacobi(const CSR<EL> &A, const std::vector<EL> &b);
+    template<typename EL>
+    friend std::vector<EL> SOR(const CSR<EL> &A, const std::vector<EL> &b, const T& w);
 private:
 
     const idx_t H, W;
