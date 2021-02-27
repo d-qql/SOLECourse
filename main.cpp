@@ -20,29 +20,14 @@
 #include <fstream>
 #include "Sparse/Yacobi.h"
 #include "Chebyshev/Chebyshev.h"
-
+#include "Sparse/SOR.h"
 int main() {
-    std::set<Triplet<double>> in;
-    for(size_t i = 0; i < 300; ++i){
-            in.insert({double (1 + i/598.), i, i});
-    }
-    CSR<double> A = CSR<double>(300, 300, in);
-    std::cout<<A;
+    CSR<double> A = CSR<double>(300, 300, GenerateMatrixDiagDominant<double>(300));
     std::vector<double> b = GenerateVector<double>(300, -1, 1);
-    std::vector<double> roots = ChebyshevRoots<double>({1, 1.5}, 7);
-    SimpleIteration(A, b, 2./2.5);
-    SimpleIteration(A, b, 1.);
-    FastSimpleIteration(A, b, roots);
-
-
-    Gnuplot gp;
-    gp<<"set xlabel 'Номер итерации' \n"
-        "set ylabel 'ln(|r|))'\n"
-        "set grid\n"
-        "set title 'Зависимость логарифма модуля невязки от номера итерации ПМИ' font 'Helvetica Bold, 10'\n";
-    gp << "plot '../PlotData/SimpleIteration/1SimpleIterNorm.txt' u 1:2 with lines title 'tao = 1' lc rgb 'black', "
-          "     '../PlotData/SimpleIteration/OptSimpleIterNorm.txt' u 1:2 with lines title 'Optimal' lc rgb 'purple',"
-          "     '../PlotData/SimpleIteration/FastSimpleIterNorm.txt' u 1:2 with lines title 'Chebyshev' lc rgb 'green'\n";
+    std::pair<double, double> k = A.localizeEigenVals();
+    double M = k.second/k.first;
+    double w = 1 + pow(M/(1+sqrt(1-M*M)), 2);
+    std::cout<<GaussSeidel(A, b)<<SOR(A, b, w);
 
     return 0;
 }
