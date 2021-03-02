@@ -5,8 +5,8 @@
 #ifndef SOLECOURSE_SOR_H
 #define SOLECOURSE_SOR_H
 #include "CSR.h"
-#include "utility/Consts.h"
-#include "utility/Overloads.h"
+#include "../utility/Consts.h"
+#include "../utility/Overloads.h"
 template<typename T>
 std::vector<T> SOR(const CSR<T> &A, const std::vector<T> &b, const T& w){
     using idx_t = typename CSR<T>::idx_t;
@@ -30,13 +30,15 @@ std::vector<T> SOR(const CSR<T> &A, const std::vector<T> &b, const T& w){
                 }else{ continue; }
             }
             sum *= w;
-            x[i] = (w * b[i] - sum + (static_cast<T>(1) - w) * temp_x[i])/A(i, i);
+            x[i] = (w * b[i] - sum)/A(i, i) + (static_cast<T>(1) - w) * temp_x[i];
         }
         ++k;
+       // std::cout<<norm(r)<<std::endl;
         r = A * x - b;
     }
+    std::cout<<k;
     std::ofstream fout;
-    fout.open("../PlotData/FasterSimple/SOR.txt", std::ios::out);
+    fout.open("../PlotData/FasterSimple/SOR" + std::to_string(w) + ".txt", std::ios::out);
     for(auto i: plotData){
         fout<<i.first<<" "<<i.second<<"\n";
     }
