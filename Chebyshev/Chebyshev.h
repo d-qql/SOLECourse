@@ -78,7 +78,7 @@ std::vector<T> ChebyshevCoef(std::pair<T, T> sec, size_t PolyOrder){
             coefs_new[n-k] += coefs_s[n] * C<T>(n, k)*pow(2./(sec.second-sec.first), n-k)*pow(-(sec.second+sec.first)/(sec.second-sec.first), k);
         }
     }
-    for(size_t i = 0; i <=PolyOrder; ++i){
+    for(size_t i = 0; i <=PolyOrder; ++i){  //нормировка старшего кэфа
         coefs_new[i]/=coefs_new[PolyOrder];
     }
     std::cout<<coefs_new;
@@ -86,6 +86,9 @@ std::vector<T> ChebyshevCoef(std::pair<T, T> sec, size_t PolyOrder){
     for(size_t i = 0; i <= PolyOrder; ++i){
         std::cout<<coefs_new[i]<<"*x^"<<i<<"+";
     }
+    T sum = 0;
+    for(size_t i = 0; i <=PolyOrder; ++i) sum += coefs_new[i];
+    for(size_t i = 0; i <=PolyOrder; ++i) coefs_new[i]/sum;
     return coefs_new;
 }
 #endif //SOLECOURSE_CHEBYSHEV_H
