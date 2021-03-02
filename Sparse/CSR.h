@@ -23,7 +23,9 @@ public:
     template<typename EL>
     friend std::vector<EL> Yacobi(const CSR<EL> &A, const std::vector<EL> &b);
     template<typename EL>
-    friend std::vector<EL> SOR(const CSR<EL> &A, const std::vector<EL> &b, const T& w);
+    friend std::vector<EL> SOR(const CSR<EL> &A, const std::vector<EL> &b, const EL& w);
+    template<typename EL>
+    friend std::vector<EL> SSOR(const CSR<EL> &A, const std::vector<EL> &b, const EL& w);
 private:
 
     const idx_t H, W;
