@@ -10,7 +10,8 @@
 #include <set>
 #include "../utility/Triplet.h"
 #include "../utility/Consts.h"
-#include "algorithm"
+#include <algorithm>
+#include "../Generators/RandVectorGenerator.h"
 
 template<typename T>
 class CSR{
@@ -90,7 +91,7 @@ public:
         return res;
     }
 
-    std::pair<T, T> localizeEigenVals() const{
+    std::pair<T, T> EVcircleLocalize() const{
         auto a = static_cast<T>(0);
         auto b = static_cast<T>(0);
         T r = 0;
@@ -112,6 +113,27 @@ public:
             if( center + r > b) b = center + r;
         }
         return {a, b};
+    }
+
+    elm_t spectrum(){
+        std::vector<elm_t> x = GenerateVector<elm_t>(this->W, -1, 1);
+        x = static_cast<elm_t>(1) / norm(x) * x;
+        std::vector<elm_t> prev_x(this->W);
+
+        auto lambda = static_cast<elm_t>(0);
+        elm_t prev_lambda;
+
+        auto err = static_cast<elm_t>(100);
+        while( err > tolerance<T>){
+            prev_x = x;
+            x = this->operator*(x);
+            prev_lambda = lambda;
+            lambda = x * prev_x;
+            x = static_cast<elm_t>(1) / norm(x) * x;
+            err = Tabs(prev_lambda - lambda) / std::max(Tabs(prev_lambda), Tabs(lambda));
+            std::cout<<err<<std::endl;
+        }
+        return lambda;
     }
 
     CSR transpose(){

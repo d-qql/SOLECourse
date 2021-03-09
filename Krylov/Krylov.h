@@ -16,22 +16,22 @@ std::tuple<std::vector<std::vector<T>>, std::set<Triplet<T>>> KrylovSubSpace(con
 
 
 
-    std::vector<T> r = b - A * x;
-    r = 1. / norm(r) * r;
-    Basis.push_back(r);
+    std::vector<T> v = b - A * x;
+    v = 1. / norm(v) * v;
+    Basis.push_back(v);
     T h;
 
-    for(size_t j = 0; j < N - 1; ++j){
-        r = A * Basis[j];
+    for(size_t j = 0; j < N; ++j){
+        v = A * Basis[j];
         for(size_t i = 0; i <= j; ++i){
-            h = Basis[i] * r;
-            H.insert({h, i, j});
-            r = r - h * Basis[i];
+            h = Basis[i] * v;
+            if( h > tolerance<T>) H.insert({h, i, j});
+            v = v - h * Basis[i];
         }
-        h = norm(r);
-        H.insert({h, j+1, j});
-        r = 1. / h * r;
-        Basis.push_back(r);
+        h = norm(v);
+        if( h > tolerance<T>) H.insert({h, j+1, j});
+        v = 1. / h * v;
+        Basis.push_back(v);
     }
     return std::tuple<std::vector<std::vector<T>>, std::set<Triplet<T>>>(Basis, H);
 }
