@@ -26,20 +26,20 @@
 #include "Krylov/Krylov.h"
 int main() {
     std::set<Triplet<double>> in;
-    for(size_t i = 0; i < 200; ++i){
-            in.insert({i+ 1., i, i});
+    for(size_t i = 0; i < 10; ++i){
+            in.insert({i+ 5., i, i});
     }
-    CSR<double> A = CSR<double>(200, 200, in);
-    std::vector<double> b = GenerateVector<double>(200, -10, 10);
-    std::vector<double> x(200);
-    x = b;
-    x[0] = 1.;
-    auto [Basis, H] = KrylovSubSpace(A, b, b, 200);
+    CSR<double> A = CSR<double>(10, 10, in);
+    std::vector<double> b = GenerateVector<double>(10, -10, 10);
+    std::vector<double> x(10);
+    std::cout<<A.spectrum();
+    //x[0] = 1.;
+    auto [Basis, H] = KrylovSubSpace(A, b, x, 6);
     for(const auto& i : Basis) std::cout<<i;
-    DenseMatrix<double> C = DenseMatrix<double>(200,200, H);
-    std::cout<<C;
+    DenseMatrix<double> C = DenseMatrix<double>(6,6, H);
+    std::cout<<C<<LUdecomp(C).first<<LUdecomp(C).second;
 
-    std::cout<<Basis[10] * (A * Basis[10])<< "\n"<<C(10, 10);
+    std::cout<<Basis[3] * (A * Basis[2])<< "\n"<<C(3, 2);
   /*  std::vector<std::string> color = {"red", "green", "yellow", "blue", "orange", "black"};
     Gnuplot gp;
     gp << "set xlabel 'Номер итерации' \n"
