@@ -9,7 +9,7 @@
 #include "../utility/Overloads.h"
 
 template<typename T>
-int GradientDescent(const CSR<T>& A, const std::vector<T>& b, int m){
+int GradientDescent(const CSR<T>& A, const std::vector<T>& b){
     std::vector<std::pair<double, double>> plotData;
 
     std::vector<T> r(b.size());
@@ -30,7 +30,7 @@ int GradientDescent(const CSR<T>& A, const std::vector<T>& b, int m){
     std::cout<<x<<std::endl;
 
     std::ofstream fout;
-    fout.open("../PlotData/GradientDescent/" + std::to_string(m) + ".txt", std::ios::out);
+    fout.open("../PlotData/GradientDescent/10.txt", std::ios::out);
     for(auto i: plotData){
         fout<<i.first<<" "<<i.second<<"\n";
     }

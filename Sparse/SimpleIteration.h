@@ -72,7 +72,7 @@ std::vector<T> FastSimpleIteration(const CSR<T> &A, const std::vector<T> &b, con
         }
     }
     std::ofstream fout;
-    fout.open("../PlotData/SimpleIteration/FastSimpleIterNorm.txt", std::ios::out);
+    fout.open("../PlotData/SimpleIteration/10.txt", std::ios::out);
     for(auto k: plotData){
         fout<<k.first<<" "<<k.second<<"\n";
     }

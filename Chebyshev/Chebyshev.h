@@ -52,6 +52,11 @@ std::vector<T> ChebyshevRoots(std::pair<T, T> section, size_t PowOf2){
 }
 
 template<typename T>
+std::vector<T> AccelerationCoefs(T spectrum){
+
+}
+
+template<typename T>
 std::vector<T> ChebyshevCoef(std::pair<T, T> sec, size_t PolyOrder){
     std::vector<T> coefs_f, coefs_s, coefs_new;
 
