@@ -25,25 +25,47 @@
 #include "Sparse/GradientDescent.h"
 #include "Krylov/Krylov.h"
 #include "Sparse/CG.h"
+#include "Givens/Rotations.h"
+#include "GMRES/GMRES.h"
 int main() {
     std::set<Triplet<double>> in;
-    for(size_t i = 0; i < 300; ++i){
-            in.insert({1. + double(i)/33.22, i, i});
+    size_t p, r;
+    double v;
+    std::fstream fin("/home/d-qql/CLionProjects/SOLECourse/cmake-build-debug/MT.txt");
+    fin>>p>>r>>v;
+    for(int i = 0; i < 1069; ++i){
+        fin>>p>>r>>v;
+        in.insert({v, p, r});
     }
-    CSR<double> A = CSR<double>(300, 300, in);
+    std::cout<<in.size();
 
-    std::vector<double> b = GenerateVector<double>(300, -1, 1);
+    size_t SZ = 1069;
 
-    std::cout<<CGmethod(A, b)<<GradientDescent(A, b)<<FastSimpleIteration(A, b, ChebyshevRoots<double>({1, 10}, 7));
-    Gnuplot gp;
-    gp<<"set xlabel 'Номер итерации' \n"
-        "set ylabel 'Логарифм невязки'\n"
-        "set grid\n"
-        "set title 'Зависимость логарифма невязки от номера итерации. Обусловленность 10' font 'Helvetica Bold, 10'\n";
-    gp << "plot '../PlotData/CG/10.txt' with lines title 'CG' lc rgb 'blue',"
-          "     '../PlotData/SimpleIteration/10.txt' with lines title 'Cheb. Simple Iter' lc rgb 'green',"
-          "     '../PlotData/GradientDescent/10.txt' with lines title 'GD' lc rgb 'red'\n";
+    std::vector<double> b;
 
+        b = GenerateVector<double>(SZ, -1, 1);
+        in = GenerateMatrix<double>(SZ, -1, 1);
+        DenseMatrix<double> B(SZ, SZ, in);
+        CSR<double> A = CSR<double>(SZ, SZ, in);
+        std::cout<<GMRES(A, b);
+
+
+    //std::vector<double> b = GenerateVector<double>(5, -1, 1);
+    //std::vector<double> v = GenerateVector<double>(10, -10000, 10000);
+
+
+    /*auto [a, c] = KrylovSubSpace(A, b, v, 10);
+
+    std::cout<<c;
+
+    std::cout<<A;
+    for(int i = 0; i < 10; ++i){
+        for(int j = 0; j < 9; ++j){
+            std::cout<<a[i]*(A*a[j])<<" "<<c(i, j)<<std::endl;
+        }
+    }
+    for(auto i : a) std::cout<<i;
+     */
     return 0;
 }
 

@@ -14,7 +14,7 @@ std::set<Triplet<T>> GenerateMatrix(const size_t& size, const int &a, const int 
     std::set<Triplet<T>> out;
     for(size_t i = 0; i < size; ++i){
         for(size_t j = 0; j < size; ++j){
-            out.insert({static_cast<T>(a + rand()%(b-a+1)), i, j});
+            out.insert({a + static_cast <T> (rand()) /( static_cast <T> (RAND_MAX/(b-a))), i, j});
         }
     }
     return out;
