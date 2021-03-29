@@ -51,6 +51,11 @@ public:
     void swap(const idx_t& fStr, const idx_t& sStr){
         for(idx_t j = 0; j < W; ++j) std::swap(matrix[fStr*W + j], matrix[sStr*W+j]);
     }
+
+    void __deleteLastRow(){
+        --H;
+        matrix.erase(matrix.end()-W, matrix.end());
+    }
 };
 //Обработать исключение несопоставимых размеров
 template<typename T>
