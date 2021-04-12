@@ -24,6 +24,23 @@ std::vector<T> backSubstTopTriangular(const DenseMatrix<T> &A, const std::vector
     //ОКОНЧАНИЕ ОБРАТНОГО ХОДА
     return res;
 }
+template<typename T>
+std::vector<T> backSubstTopTriangular(const DenseMatrix<T> &A, const std::vector<T> &b, size_t H, size_t W){
+    //ОБРАТНЫЙ ХОД
+    std::vector<T> res;
+    res.resize(b.size());
+    res.back() = b.back()/A(H-1, W-1);
+    T sum = 0;
+    for(int i = int(H)-2; i >= 0; --i){   //проход от предпоследнего элемента свободного столбца
+        sum = 0;
+        for(size_t j = i+1; j < W; ++j){
+            sum+=A(i, j)*res[j];
+        }
+        res[i] = (b[i] - sum)/A(i, i);
+    }
+    //ОКОНЧАНИЕ ОБРАТНОГО ХОДА
+    return res;
+}
 
 template<typename T>
 std::vector<T> backSubstLowerTriangular(const DenseMatrix<T> &A, const std::vector<T> &b){

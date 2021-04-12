@@ -29,7 +29,7 @@
 #include "GMRES/GMRES.h"
 int main() {
     std::set<Triplet<double>> in;
-    size_t p, r;
+   /* size_t p, r;
     double v;
     std::fstream fin("/home/d-qql/CLionProjects/SOLECourse/cmake-build-debug/MT.txt");
     fin>>p>>r>>v;
@@ -38,17 +38,24 @@ int main() {
         in.insert({v, p, r});
     }
     std::cout<<in.size();
-
-    size_t SZ = 1069;
+*/
+    size_t SZ = 50;
 
     std::vector<double> b;
 
         b = GenerateVector<double>(SZ, -1, 1);
-        in = GenerateMatrix<double>(SZ, -1, 1);
-        DenseMatrix<double> B(SZ, SZ, in);
-        CSR<double> A = CSR<double>(SZ, SZ, in);
-        std::cout<<GMRES(A, b);
+        in = GenerateMatrixDiagDominant<double>(SZ);
 
+
+        CSR<double> A = CSR<double>(SZ, SZ, in);
+        std::cout<<GMRES(A, b)<<GaussSeidel(A, b);
+    Gnuplot gp;
+    gp<<"set xlabel 'Номер итерации' \n"
+        "set ylabel 'Логарифм нормы невязки'\n"
+        "set grid\n"
+        "set title 'Зависимость логарифма нормы невязки от номера итерации' font 'Helvetica Bold, 10'\n";
+    gp << "plot '../PlotData/SimpleIteration/GaussSeidelNorm.txt' with lines title 'GaussSeidel' lc rgb 'blue',"
+          "     '../PlotData/GMRES/Norm.txt' with lines title 'GMRES' lc rgb 'red'\n";
 
     //std::vector<double> b = GenerateVector<double>(5, -1, 1);
     //std::vector<double> v = GenerateVector<double>(10, -10000, 10000);
