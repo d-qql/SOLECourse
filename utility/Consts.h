@@ -7,7 +7,7 @@
 #include <cmath>
 
 template<typename T>
-[[maybe_unused]] const auto tolerance = static_cast<T>(1e-10);
+[[maybe_unused]] const auto tolerance = static_cast<T>(1e-9);
 
 template<typename T>
 T Tabs(T value){

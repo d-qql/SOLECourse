@@ -11,36 +11,27 @@
 #include "../Dense/DenseMatrix.h"
 
 template<typename T>
-std::tuple<DenseMatrix<T>, DenseMatrix<T>> KrylovSubSpace(const CSR<T>& A, const std::vector<T>& r, size_t N){
-    std::set<Triplet<T>> H;
-    std::vector<std::vector<T>> Basis;
-    DenseMatrix<T> V = DenseMatrix<T>(r.size(), N-1);
+void KrylovSubSpace(const CSR<T>& A, std::vector<std::vector<T>>& Basis, DenseMatrix<T>& H, size_t N){ // Basis- базисные векторы,
+    // на первой итерации первый равен нормированной невязке, N - текущий размер матрицы хессенберга по ширине
 
-    std::vector<T> v = r;
-    v = 1. / norm(v) * v;
-    Basis.push_back(v);
+
+    std::vector<T> v = Basis.back();
     T h;
 
-    for(size_t j = 0; j < N-1; ++j){
-        v = A * Basis[j];
-        for(size_t i = 0; i <= j; ++i){
-            h = Basis[i] * v;
-            if( Tabs(h) > tolerance<T>) H.insert({h, i, j});
-            v = v - h * Basis[i];
-        }
-        h = norm(v);
-        if( Tabs(h) > tolerance<T>) H.insert({h, j+1, j});
-        v = 1. / h * v;
-        Basis.push_back(v);
-    }
-    for(size_t j = 0; j < N-1; ++j){
-        for(size_t i = 0; i < r.size(); ++i){
-            V(i, j) = Basis[j][i];
-        }
-    }
 
-    return std::tuple<DenseMatrix<T>, DenseMatrix<T>>(V, DenseMatrix<T>(N, N-1, H));
+    v = A * Basis[N]; //ищем следующий базисный вектор
+    for(size_t i = 0; i <= N; ++i){ //ортогонализуем
+        h = Basis[i] * v;
+        if( Tabs(h) > tolerance<T>) H(i, N) = h;
+        v = v - h * Basis[i];
+    }
+    h = norm(v);
+    if( Tabs(h) > tolerance<T>) H(N+1, N) = h;
+    v = 1. / h * v;
+    Basis.push_back(v);
 }
+
+
 
 template<typename T>
 std::tuple<std::vector<std::vector<T>>, std::set<Triplet<T>>> GoodKrylovSubSpace(const CSR<T>& A, const std::vector<T>& b, std::vector<T> v, size_t N){
