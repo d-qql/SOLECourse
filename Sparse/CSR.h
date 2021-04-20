@@ -137,7 +137,7 @@ public:
         return lambda;
     }
 
-    CSR transpose(){
+    CSR transpose() const{
         idx_t NonZero = values.size();
         std::vector<elm_t> tVals(NonZero);
         std::vector<idx_t> tCols(NonZero);
@@ -145,7 +145,7 @@ public:
         for(idx_t i = 0; i < NonZero; ++i) tRows[cols[i] + 1]++;  //Посчитали число ненулевых в каждой строке транспонированной матрицы
         idx_t S = 0;
         idx_t tmp;
-        for(idx_t i = 1; i <= W; ++i){          //добавляем к каждой ячейке индексации строк сумму предыдущих
+        for(idx_t i = 1; i <= W; ++i){          //запишем в индекс каждой из строк суммы во всех предыдущих
             tmp = tRows[i];
             tRows[i] = S;
             S = S + tmp;
@@ -162,7 +162,7 @@ public:
                 IIndex = tRows[RIndex + 1];
                 tVals[IIndex] = V;
                 tCols[IIndex] = Col;
-                tRows[RIndex + 1]++;
+                tRows[RIndex + 1]++;    //дополним каждую строку числом вставленных в нее элементов
             }
         }
         return CSR(W, H, tVals, tCols, tRows);
