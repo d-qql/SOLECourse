@@ -28,6 +28,7 @@
 #include "Givens/Rotations.h"
 #include "GMRES/GMRES.h"
 #include "Sparse/BiCG.h"
+#include "Sparse/BiCGstab.h"
 int main() {
     std::set<Triplet<double>> in;
    /* size_t p, r;
@@ -40,7 +41,7 @@ int main() {
     }
     std::cout<<in.size();
 */
-    size_t SZ = 5;
+    size_t SZ = 20;
 
     std::vector<double> b;
 
@@ -50,9 +51,10 @@ int main() {
 
         CSR<double> A = CSR<double>(SZ, SZ, in);
         std::vector<double> x = GenerateVector<double>(SZ, -1, 1);
-        std::cout<<GMRES(A, b, 10)<<GaussSeidel(A, b)<<BiCG(A,b)<<CGmethod(A, b);
-        A.print();
-        A.transpose().print();
+        std::cout<<"GMRES: "<<GMRES(A, b, 10)<<"GS: "<<GaussSeidel(A, b)<<"BiCG: "<<BiCG(A,b)<<"CG: "<<CGmethod(A, b)<<"BiCGstab: "<<BiCGstab(A, b, 1000);
+        std::cout<<A;
+        A.YacobiPrecond();
+        std::cout<<A;
     Gnuplot gp;
     gp<<"set xlabel 'Номер итерации' \n"
         "set ylabel 'Логарифм нормы невязки'\n"

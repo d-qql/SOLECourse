@@ -167,7 +167,13 @@ public:
         }
         return CSR(W, H, tVals, tCols, tRows);
     }
-
+    void YacobiPrecond(){
+        elm_t diag_elm;
+        for(idx_t i = 0; i < this->H; ++i){
+            diag_elm = this->operator()(i, i);
+            for(idx_t j = this->rows[i]; j < this->rows[i+1]; ++j) values[j] /= diag_elm;
+        }
+    }
     void print() const{
         for(auto v: values) std::cout<<v<<" ";
         std::cout<<std::endl;
