@@ -23,12 +23,9 @@ std::vector<T> BiCG(const CSR<T>& A, const std::vector<T>& b){
     long long int i = 1;
     while( N > tolerance<T> ){
         rho = r1*r0;
-        try {
-            if (Tabs(rho) < tolerance<T>) throw 1;
-        }
-        catch(int){
-            std::cout<<"FAIL!";
-            std::cout<<"\n"<<i<<"\n";
+        if (Tabs(rho) < tolerance<T>){
+           // std::cout<<"FAIL!, RESTARTING...";
+           // std::cout<<"\n"<<i<<"\n";
             i = 1;
            // return BiCG(A, b, x);
         }
